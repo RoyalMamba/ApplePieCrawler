@@ -78,6 +78,7 @@ Parmod Sawant
 Piyush Goyal
 PK Mishra
 Pratibha Patil
+Vicky Kaushal
 Radha Mohan singh
 Raghubar Das
 Rahul Ghandhi
@@ -99,7 +100,6 @@ Vicky Kaushal
 willem-alexander
 Yogendra Yadav
 '''
-
 famous_personalities = famous_personalities.split('\n')
 
 # Specify the number of images to download for each personality
@@ -121,11 +121,9 @@ def download(personality):
 
     # Set up the BingImageCrawler
     bing_crawler = GoogleImageCrawler(
-        downloader_threads=90, storage={"root_dir": folder_name},
-        verify_ssl = False
+        downloader_threads=100, storage={"root_dir": folder_name},
     )
-
-    sleep(1)
+    bing_crawler.session.verify = False
 
     # Specify the image size (large) and other filters
     filters = dict(
@@ -136,7 +134,7 @@ def download(personality):
     )
 
     # Start image crawling with the specified filters
-    bing_crawler.crawl(keyword=search_query, max_num=num_images_to_download, filters=filters , min_size=)
+    bing_crawler.crawl(keyword=search_query, max_num=num_images_to_download, filters=filters)
 
     print(f"Downloaded {num_images_to_download} images of {personality} with Narendra Modi together.")
 
