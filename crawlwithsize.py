@@ -98,19 +98,18 @@ Ursula Von Der Leyen
 Venkaiah Naidu
 Vicky Kaushal
 willem-alexander
-Yogendra Yadav
-'''
+Yogendra Yadav'''
 
 famous_personalities = famous_personalities.split('\n')
 
 # Specify the initial number of images to download for each personality
-initial_num_images_to_download = 50
+initial_num_images_to_download = 100
 
 # Maximum number of images to download for each personality
-max_num_images_to_download = 400
+max_num_images_to_download = 1000
 
 # Create a folder for images if it doesn't exist
-output_directory = "images"
+output_directory = "GoogleImages"
 if not os.path.exists(output_directory):
     os.makedirs(output_directory)
 
@@ -124,10 +123,10 @@ def download(personality):
     search_queries = [f"{personality} with Narendra Modi", f"{personality}" , f'{personality} in an event']
 
     # Set up the BingImageCrawler
-    bing_crawler = GoogleImageCrawler(
+    crawler = BingImageCrawler(
         downloader_threads=100, storage={"root_dir": folder_name}
     )
-    bing_crawler.session.verify = False
+    crawler.session.verify = False
 
     # Start with the initial number of images to download and gradually increase it
     num_images_to_download = initial_num_images_to_download
@@ -142,7 +141,8 @@ def download(personality):
             )
 
             # Start image crawling with the specified filters
-            bing_crawler.crawl(keyword=search_query, max_num=num_images_to_download, filters=filters)
+            crawler.crawl(keyword=search_query, max_num=num_images_to_download, filters=filters)
+            sleep(0.5)
 
         # Increase the number of images to download for the next iteration
         num_images_to_download *= 2
@@ -151,5 +151,9 @@ def download(personality):
 
 
 # Use multiple search engines with concurrent downloading
-with ThreadPoolExecutor(max_workers=95) as executor:
-    futures = [executor.submit(download, personality) for personality in famous_personalities]
+try : 
+    with ThreadPoolExecutor(max_workers=95) as executor:
+        futures = [executor.submit(download, personality) for personality in famous_personalities]
+except KeyboardInterrupt:
+    for future in futures:
+        future.terminate()
