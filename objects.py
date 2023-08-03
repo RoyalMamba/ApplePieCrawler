@@ -5,7 +5,7 @@ from concurrent.futures import ThreadPoolExecutor
 import openpyxl
 
 workbook = openpyxl.load_workbook('ListofPersonalities.xlsx')
-sheet = workbook['ProminentPersonalities']
+sheet = workbook['Objects']
 Personalities = []
 for personality_row in sheet.iter_rows(values_only=True, min_row=2):
     personality = personality_row[0]
@@ -29,7 +29,8 @@ def download(personality):
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
 
-    search_queries = [f"{personality} with Narendra Modi", f"{personality}" , f'{personality} in an event']
+    # search_queries = [f"{personality}", f"{personality}" , f'{personality} in an event']
+    search_queries = [f'{personality}', f'people with {personality}']
 
     # Set up the BingImageCrawler
     crawler = BingImageCrawler(
@@ -56,7 +57,7 @@ def download(personality):
         # Increase the number of images to download for the next iteration
         num_images_to_download *= 2
 
-    print(f"Downloaded {max_num_images_to_download} images of {personality} with Narendra Modi together.")
+    # print(f"Downloaded {max_num_images_to_download} images of {personality} with Narendra Modi together.")
 
 
 # Use multiple search engines with concurrent downloading
