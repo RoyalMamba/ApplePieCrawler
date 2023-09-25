@@ -1,4 +1,4 @@
-from icrawler.builtin import GoogleImageCrawler
+from icrawler.builtin import GoogleImageCrawler, BingImageCrawler
 from icrawler import ImageDownloader
 import os
 from time import sleep
@@ -6,13 +6,13 @@ from concurrent.futures import ThreadPoolExecutor
 import openpyxl
 
 workbook = openpyxl.load_workbook('ListofPersonalities.xlsx')
-sheet = workbook['Objects']
+sheet = workbook['ProminentPersonalities']
 Personalities = [personality[0] for personality in sheet.iter_rows(values_only=True, min_row=2)]
 # Specify the initial number of images to download for each personality
-initial_num_images_to_download = 100
+initial_num_images_to_download = 200
 
 # Create a folder for images if it doesn't exist
-output_directory = "ObjectsImages"
+output_directory = "ALQUAMA"
 if not os.path.exists(output_directory):
     os.makedirs(output_directory)
 
@@ -36,17 +36,17 @@ def download(personality):
     num_images_to_download = initial_num_images_to_download
     for search_query in search_queries:
         # Specify the image filters and other parameters
-        crawler = GoogleImageCrawler(
+        crawler = BingImageCrawler(
             downloader_cls=CustomDownloader,
-            feeder_threads=2,
-            parser_threads=4,
-            downloader_threads=12,
+            # feeder_threads=1,
+            # parser_threads=4,
+            downloader_threads=8,
             storage={"root_dir": folder_name}
         )
         crawler.session.verify = False
 
         filters = dict(
-            size="large",  # Use 'large' for very large image sizes
+            # size="large",  # Use 'large' for very large image sizes
             # date=((2010, 1, 1), None),  # Filter images from 2010 onwards (change the date range if needed)
             color="color",  # Filter images by color type
             type="photo",  # Filter images by type (photo, clipart, face, lineart, etc.)
